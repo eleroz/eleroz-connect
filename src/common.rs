@@ -1004,6 +1004,15 @@ pub fn get_app_name() -> String {
     hbb_common::config::APP_NAME.read().unwrap().clone()
 }
 
+/// ЭЛЕРОЗ: название, которое видит человек (окна, трей, тексты).
+/// Служба, папки и каналы связи используют техническое APP_NAME: латиница без пробелов.
+pub const DISPLAY_APP_NAME: &str = "ЭЛЕРОЗ Коннект";
+
+#[inline]
+pub fn get_display_app_name() -> String {
+    DISPLAY_APP_NAME.to_owned()
+}
+
 #[inline]
 pub fn is_rustdesk() -> bool {
     hbb_common::config::APP_NAME.read().unwrap().eq("RustDesk")
