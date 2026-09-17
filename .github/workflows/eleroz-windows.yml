@@ -19,6 +19,8 @@ env:
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   VCPKG_COMMIT_ID: "120deac3062162151622ca4860575a33844ba10b"
   VERSION: "1.4.9"
+  # Папка на сайте, откуда программа берёт обновление; там же лежит update.json
+  UPDATE_BASE_URL: "https://eleroz.ru/connect/"
 
 jobs:
   generate-bridge:
@@ -243,6 +245,17 @@ jobs:
           popd
           mv $msi.FullName ./SignOutput/ElerozConnect-${{ env.VERSION }}-b${{ github.run_number }}-x64.msi
           Get-FileHash ./SignOutput/*.msi | Format-List
+
+      - name: Build update manifest
+        run: |
+          python eleroz/make_update_json.py --build ${{ github.run_number }} --version ${{ env.VERSION }} --dir ./SignOutput --base ${{ env.UPDATE_BASE_URL }} --out ./SignOutput/update.json
+          Get-Content ./SignOutput/update.json
+
+      - name: Upload update manifest
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: eleroz-connect-update-json
+          path: ./SignOutput/update.json
 
       - name: Upload ELEROZ Connect MSI
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
