@@ -12,6 +12,8 @@ import 'package:flutter_hbb/consts.dart';
 import 'package:flutter_hbb/desktop/pages/connection_page.dart';
 import 'package:flutter_hbb/desktop/pages/desktop_setting_page.dart';
 import 'package:flutter_hbb/desktop/pages/desktop_tab_page.dart';
+import 'package:flutter_hbb/desktop/pages/eleroz_access.dart';
+import 'package:flutter_hbb/desktop/pages/eleroz_help.dart';
 import 'package:flutter_hbb/desktop/widgets/update_progress.dart';
 import 'package:flutter_hbb/models/platform_model.dart';
 import 'package:flutter_hbb/models/server_model.dart';
@@ -93,6 +95,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
       if (!isOutgoingOnly) buildPasswordBoard(context),
+      if (!isOutgoingOnly) buildPermanentAccessBoard(context),
       FutureBuilder<Widget>(
         future: Future.value(
             Obx(() => buildHelpCards(stateGlobal.updateUrl.value))),
@@ -222,7 +225,10 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                   ?.color
                                   ?.withOpacity(0.5)),
                         ).marginOnly(top: 5),
-                        buildPopupMenu(context)
+                        Row(children: [
+                          buildHelpButton(context),
+                          buildPopupMenu(context),
+                        ])
                       ],
                     ),
                   ),
@@ -251,6 +257,85 @@ class _DesktopHomePageState extends State<DesktopHomePage>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ЭЛЕРОЗ: инструкция открывается отсюда, объяснений на экранах нет.
+  Widget buildHelpButton(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.titleLarge?.color;
+    RxBool hover = false.obs;
+    return InkWell(
+      onTap: showElerozHelpDialog,
+      child: Tooltip(
+        message: 'Инструкция',
+        child: Obx(
+          () => CircleAvatar(
+            radius: 15,
+            backgroundColor: hover.value
+                ? Theme.of(context).scaffoldBackgroundColor
+                : Theme.of(context).colorScheme.background,
+            child: Icon(
+              Icons.help_outline,
+              size: 20,
+              color: hover.value ? textColor : textColor?.withOpacity(0.5),
+            ),
+          ),
+        ),
+      ),
+      onHover: (value) => hover.value = value,
+    );
+  }
+
+  // ЭЛЕРОЗ: главное действие зоны — кнопкой, а не пунктом в спрятанных настройках.
+  Widget buildPermanentAccessBoard(BuildContext context) {
+    return ChangeNotifierProvider.value(
+      value: gFFI.serverModel,
+      child: Consumer<ServerModel>(
+        builder: (context, model, child) {
+          final on = model.verificationMethod == kUsePermanentPassword;
+          final textColor = Theme.of(context).textTheme.titleLarge?.color;
+          return Container(
+            margin: const EdgeInsets.only(left: 20.0, right: 16, bottom: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 2,
+                  height: 76,
+                  decoration: BoxDecoration(color: MyTheme.accent),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 7),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AutoSizeText(
+                          'Постоянный доступ',
+                          style: TextStyle(
+                              fontSize: 14, color: textColor?.withOpacity(0.5)),
+                          maxLines: 1,
+                        ),
+                        Text(
+                          on ? 'Включён' : 'Не настроен',
+                          style: const TextStyle(fontSize: 15),
+                        ).marginOnly(top: 2),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: showPermanentAccessDialog,
+                            child: Text(on ? 'Изменить пароль' : 'Настроить'),
+                          ),
+                        ).marginOnly(top: 8),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -294,8 +379,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     RxBool refreshHover = false.obs;
     RxBool editHover = false.obs;
     final textColor = Theme.of(context).textTheme.titleLarge?.color;
-    final showOneTime = model.approveMode != 'click' &&
-        model.verificationMethod != kUsePermanentPassword;
+    final permanent = model.verificationMethod == kUsePermanentPassword;
+    final showOneTime = model.approveMode != 'click' && !permanent;
     return Container(
       margin: EdgeInsets.only(left: 20.0, right: 16, top: 13, bottom: 13),
       child: Row(
@@ -314,13 +399,21 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AutoSizeText(
-                    translate("One-time Password"),
+                    permanent ? 'Постоянный пароль' : translate("One-time Password"),
                     style: TextStyle(
                         fontSize: 14, color: textColor?.withOpacity(0.5)),
                     maxLines: 1,
                   ),
                   Row(
                     children: [
+                      if (permanent)
+                        Expanded(
+                          child: Text(
+                            'Задан вами',
+                            style: const TextStyle(fontSize: 15),
+                          ).marginOnly(top: 12),
+                        )
+                      else
                       Expanded(
                         child: GestureDetector(
                           onDoubleTap: () {
