@@ -107,6 +107,8 @@ jobs:
           submodules: recursive
 
       - name: ELEROZ branding for hbb_common
+        env:
+          ELEROZ_BUILD: ${{ github.run_number }}
         run: python eleroz/brand_hbb_common.py
 
       - name: Restore bridge files

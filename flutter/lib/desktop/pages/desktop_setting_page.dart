@@ -544,13 +544,22 @@ class _GeneralState extends State<_General> {
             ),
           ),
       ],
-      if (!isWeb && !bind.isCustomClient())
+      if (!isWeb)
         _OptionCheckBox(
           context,
           'Check for software update on startup',
           kOptionEnableCheckUpdate,
           isServer: false,
         ),
+      if (!isWeb)
+        _SubButton('Проверить обновление', () async {
+          showToast('Проверяем обновление…');
+          bind.mainGetSoftwareUpdateUrl();
+          await Future.delayed(const Duration(seconds: 4));
+          if (stateGlobal.updateUrl.value.isEmpty) {
+            showToast('Установлена последняя версия');
+          }
+        }),
       if (showAutoUpdate)
         _OptionCheckBox(
           context,

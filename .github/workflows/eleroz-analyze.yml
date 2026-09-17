@@ -45,6 +45,10 @@ jobs:
         run: |
           flutter pub get
           flutter analyze --no-fatal-infos \
+            lib/common.dart \
             lib/desktop/pages/eleroz_access.dart \
             lib/desktop/pages/eleroz_help.dart \
-            lib/desktop/pages/desktop_home_page.dart
+            lib/desktop/pages/desktop_home_page.dart \
+            lib/desktop/pages/desktop_setting_page.dart \
+            lib/desktop/pages/connection_page.dart \
+            lib/desktop/widgets/update_progress.dart

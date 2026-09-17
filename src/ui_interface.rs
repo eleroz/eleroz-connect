@@ -747,6 +747,10 @@ pub fn current_is_wayland() -> bool {
 
 #[inline]
 pub fn get_new_version() -> String {
+    let eleroz = crate::eleroz_update::new_version();
+    if !eleroz.is_empty() {
+        return eleroz;
+    }
     (*SOFTWARE_UPDATE_URL
         .lock()
         .unwrap()
