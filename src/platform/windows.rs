@@ -1576,6 +1576,7 @@ pub fn install_me(options: &str, path: String, silent: bool, debug: bool) -> Res
         version_build = versions[2];
     }
     let app_name = crate::common::get_display_app_name();
+    let tray_lnk = get_tray_shortcut_name();
 
     let current_exe = std::env::current_exe()?;
 
@@ -1665,7 +1666,7 @@ if exist \"{uninstall_shortcut}\" del /f /q \"{uninstall_shortcut}\"
 if exist \"{tray_shortcut}\" del /f /q \"{tray_shortcut}\"
 if exist \"{tmp_path}\\{app_name}.lnk\" del /f /q \"{tmp_path}\\{app_name}.lnk\"
 if exist \"{tmp_path}\\Удалить {app_name}.lnk\" del /f /q \"{tmp_path}\\Удалить {app_name}.lnk\"
-if exist \"{tmp_path}\\{app_name} Tray.lnk\" del /f /q \"{tmp_path}\\{app_name} Tray.lnk\"
+if exist \"{tmp_path}\\{tray_lnk}.lnk\" del /f /q \"{tmp_path}\\{tray_lnk}.lnk\"
         "
     );
     let src_exe = std::env::current_exe()?.to_str().unwrap_or("").to_string();
@@ -1682,7 +1683,7 @@ if exist \"{tmp_path}\\{app_name} Tray.lnk\" del /f /q \"{tmp_path}\\{app_name} 
     } else {
         format!("
 cscript \"{tray_shortcut}\"
-copy /Y \"{tmp_path}\\{app_name} Tray.lnk\" \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\\"
+copy /Y \"{tmp_path}\\{tray_lnk}.lnk\" \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\\"
 ")
     };
 
@@ -1824,11 +1825,12 @@ fn get_uninstall(kill_self: bool, uninstall_printer: bool) -> String {
     if exist \"{path}\" rd /s /q \"{path}\"
     if exist \"{start_menu}\" rd /s /q \"{start_menu}\"
     if exist \"%PUBLIC%\\Desktop\\{app_name}.lnk\" del /f /q \"%PUBLIC%\\Desktop\\{app_name}.lnk\"
-    if exist \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name} Tray.lnk\" del /f /q \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name} Tray.lnk\"
+    if exist \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{tray_lnk}.lnk\" del /f /q \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{tray_lnk}.lnk\"
     ",
         before_uninstall=get_before_uninstall(kill_self),
         uninstall_amyuni_idd=get_uninstall_amyuni_idd(),
         app_name = crate::common::get_display_app_name(),
+        tray_lnk = get_tray_shortcut_name(),
     )
 }
 
@@ -3167,12 +3169,13 @@ pub fn uninstall_service(show_new_window: bool, _: bool) -> bool {
     chcp 65001
     sc stop {app_name}
     sc delete {app_name}
-    if exist \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name} Tray.lnk\" del /f /q \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name} Tray.lnk\"
+    if exist \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{tray_lnk}.lnk\" del /f /q \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{tray_lnk}.lnk\"
     taskkill /F /IM {broker_exe}
     taskkill /F /IM {app_name}.exe{filter}
     ",
         app_name = crate::get_app_name(),
         broker_exe = WIN_TOPMOST_INJECTED_PROCESS_EXE,
+        tray_lnk = get_tray_shortcut_name(),
     );
     if let Err(err) = run_cmds(cmds, false, "uninstall") {
         Config::set_option("stop-service".into(), "".into());
@@ -3197,12 +3200,13 @@ pub fn install_service() -> bool {
 chcp 65001
 taskkill /F /IM {app_name}.exe{filter}
 cscript \"{tray_shortcut}\"
-copy /Y \"{tmp_path}\\{app_name} Tray.lnk\" \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\\"
+copy /Y \"{tmp_path}\\{tray_lnk}.lnk\" \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\\"
 {import_config}
 {create_service}
 if exist \"{tray_shortcut}\" del /f /q \"{tray_shortcut}\"
     ",
         app_name = crate::get_app_name(),
+        tray_lnk = get_tray_shortcut_name(),
         import_config = get_import_config(&exe),
         create_service = get_create_service(&exe),
     );
@@ -3654,6 +3658,12 @@ pub fn update_me_msi(msi: &str, quiet: bool) -> ResultType<()> {
     Ok(())
 }
 
+// ЭЛЕРОЗ: имя ярлыка автозапуска. Его пишет vbs, копирует установщик и удаляют оба
+// удаления — поэтому имя берётся из одного места.
+fn get_tray_shortcut_name() -> String {
+    format!("{} (автозапуск)", crate::common::get_display_app_name())
+}
+
 pub fn get_tray_shortcut(
     install_dir: &str,
     exe: &str,
@@ -3665,7 +3675,7 @@ pub fn get_tray_shortcut(
         format!(
             "
 Set oWS = WScript.CreateObject(\"WScript.Shell\")
-sLinkFile = \"{tmp_path}\\{app_name} Tray.lnk\"
+sLinkFile = \"{tmp_path}\\{tray_lnk}.lnk\"
 
 Set oLink = oWS.CreateShortcut(sLinkFile)
     oLink.TargetPath = \"{exe}\"
@@ -3673,7 +3683,7 @@ Set oLink = oWS.CreateShortcut(sLinkFile)
     {shortcut_icon_location}
 oLink.Save
         ",
-            app_name = crate::common::get_display_app_name(),
+            tray_lnk = get_tray_shortcut_name(),
         ),
         "vbs",
         "tray_shortcut",
@@ -3707,8 +3717,8 @@ fn get_create_service(exe: &str) -> String {
     let stop = Config::get_option("stop-service") == "Y";
     if stop {
         format!("
-if exist \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name} Tray.lnk\" del /f /q \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name} Tray.lnk\"
-", app_name = crate::get_app_name())
+if exist \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{tray_lnk}.lnk\" del /f /q \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{tray_lnk}.lnk\"
+", tray_lnk = get_tray_shortcut_name())
     } else {
         format!("
 sc create {app_name} binpath= \"\\\"{exe}\\\" --service\" start= auto DisplayName= \"{app_name} Service\"

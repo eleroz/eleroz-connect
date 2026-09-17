@@ -145,9 +145,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   std::wstring window_title;
   if (is_cm_page) {
-    window_title = app_name + L" - Connection Manager";
+    // ELEROZ: Russian window captions, \u escapes keep this file ASCII-only.
+    window_title = app_name + L" \u2014 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435";
   } else if (is_install_page) {
-    window_title = app_name + L" - Install";
+    window_title = app_name + L" \u2014 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430";
   } else {
     window_title = app_name;
   }
