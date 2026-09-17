@@ -1,56 +1,52 @@
 ﻿<!--
-This file contains the declaration of all the localizable strings.
+Строки, которые видит человек. Кодовая страница 1251 — иначе кириллица не попадёт в базу MSI.
 -->
-<WixLocalization Culture="en-us" Codepage="1252"
+<WixLocalization Culture="en-us" Codepage="1251"
 	xmlns="http://wixtoolset.org/schemas/v4/wxl">
 
-	<String Id="SummaryCodepage" Value="1252" />
-	<String Id="ProductLanguage" Value="1033" />
+	<String Id="SummaryCodepage" Value="1251" />
+	<String Id="ProductLanguage" Value="1049" />
 
 	<!-- General strings -->
-	<String Id="DowngradeError" Value="A newer version of [ProductName] is already installed." />
+	<String Id="DowngradeError" Value="На компьютере уже стоит более новая версия [ProductName]." />
 
-	<String Id="AR_Comment" Value="RustDesk" />
+	<String Id="AR_Comment" Value="Программа удалённой помощи ЭЛЕРОЗ" />
 
-	<String Id="F_App" Value="RustDesk" />
-	<String Id="F_App_Desc" Value="RustDesk - Main programs installations." />
+	<String Id="F_App" Value="ЭЛЕРОЗ Коннект" />
+	<String Id="F_App_Desc" Value="Основные файлы программы." />
 
-	<String Id="SC_Uninstall" Value="Uninstall RustDesk" />
-	<String Id="SC_Uninstall_Desc" Value="Removes RustDesk or parts of it from the computer" />
+	<String Id="SC_Uninstall" Value="Удалить ЭЛЕРОЗ Коннект" />
+	<String Id="SC_Uninstall_Desc" Value="Удаляет ЭЛЕРОЗ Коннект с компьютера" />
 
 	<!-- Client related strings -->
-	<String Id="F_Client" Value="Client" />
-	<String Id="F_Client_Desc" Value="The user interface. Plays media files." />
-	<String Id="F_Client_Plugins" Value="Plugins" />
-	<String Id="F_Client_Plugins_Desc" Value="Plugins for the client." />
-	<String Id="F_LAVFilters" Value="LAV Filters" />
-	<String Id="F_LAVFilters_Desc" Value="Recommended directshow filters for best audio and video playback experience." />
+	<String Id="F_Client" Value="Клиент" />
+	<String Id="F_Client_Desc" Value="Окно программы." />
+	<String Id="F_Client_Plugins" Value="Дополнения" />
+	<String Id="F_Client_Plugins_Desc" Value="Дополнения к программе." />
 
-	<String Id="SC_Client" Value="RustDesk" />
-	<String Id="SC_Client_Desc" Value="Start RustDesk." />
+	<String Id="SC_Client" Value="ЭЛЕРОЗ Коннект" />
+	<String Id="SC_Client_Desc" Value="Запустить ЭЛЕРОЗ Коннект." />
 
-	<String Id="SC_Client_Tray" Value="RustDesk Tray" />
-	<String Id="SC_Client_Tray_Desc" Value="Start RustDesk tray." />
+	<String Id="SC_Client_Tray" Value="ЭЛЕРОЗ Коннект (автозапуск)" />
+	<String Id="SC_Client_Tray_Desc" Value="Значок ЭЛЕРОЗ Коннект рядом с часами." />
 
 	<!-- Server related strings -->
-	<String Id="F_Server" Value="Server" />
-	<String Id="F_Server_Desc" Value="The server part of RustDesk. Provides the MediaLibrary and other services." />
-	<String Id="F_Server_Plugins" Value="Plugins" />
-	<String Id="F_Server_Plugins_Desc" Value="Plugins for the server." />
+	<String Id="F_Server" Value="Служба" />
+	<String Id="F_Server_Desc" Value="Служба, которая принимает подключения." />
 
-	<String Id="Service_DisplayName" Value="RustDesk Service" />
-	<String Id="Service_Description" Value="This service runs the RustDesk Server." />
+	<String Id="Service_DisplayName" Value="Служба ЭЛЕРОЗ Коннект" />
+	<String Id="Service_Description" Value="Принимает подключения удалённой помощи ЭЛЕРОЗ Коннект." />
 
 	<!-- Launch Conditions -->
-	<String Id="LC_OS" Value="[ProductName] requires minimum Windows 7 / 2008 R2 as operating system." />
-	<String Id="LC_ADMIN" Value="You need to be an administrator to install [ProductName]." />
+	<String Id="LC_OS" Value="Для [ProductName] нужна Windows 7 / 2008 R2 или новее." />
+	<String Id="LC_ADMIN" Value="Устанавливать [ProductName] может только администратор." />
 
 	<!-- User Interfaces -->
-	<String Id="AnotherAppDialogTitle" Value="Cancel installation."/>
-	<String Id="AnotherAppDialogDescription" Value="The application is installed by self-installation method, please uninstall it first."/>
+	<String Id="AnotherAppDialogTitle" Value="Установка отменена."/>
+	<String Id="AnotherAppDialogDescription" Value="Программа уже установлена обычным способом. Сначала удалите её."/>
 
-	<String Id="MyInstallDirDlgDesktopShortcuts" Value="Create desktop icon" />
-	<String Id="MyInstallDirDlgStartMenuShortcuts" Value="Create start menu shortcuts" />
-	<String Id="MyInstallDirDlgPrinter" Value="Install RustDesk Printer" />
+	<String Id="MyInstallDirDlgDesktopShortcuts" Value="Создать значок на рабочем столе" />
+	<String Id="MyInstallDirDlgStartMenuShortcuts" Value="Создать ярлыки в меню «Пуск»" />
+	<String Id="MyInstallDirDlgPrinter" Value="Установить принтер ЭЛЕРОЗ Коннект" />
 
 </WixLocalization>

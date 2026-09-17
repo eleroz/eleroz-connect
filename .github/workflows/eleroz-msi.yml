@@ -1,0 +1,56 @@
+# ЭЛЕРОЗ Коннект: MSI из уже собранной папки программы.
+# Берёт артефакт eleroz-connect-windows-x64-folder указанного запуска и упаковывает его,
+# поэтому прогон занимает минуты, а не час. Шаги те же, что в flutter-build.yml RustDesk.
+name: "ЭЛЕРОЗ Коннект — MSI из готовой сборки"
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Номер запуска сборки Windows, откуда взять папку программы"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  VERSION: "1.4.9"
+
+jobs:
+  build-msi:
+    name: MSI x64
+    runs-on: windows-2022
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Download program folder
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: eleroz-connect-windows-x64-folder
+          path: ./rustdesk
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+
+      - name: Build MSI
+        run: |
+          python eleroz/build_msi.py ${{ env.VERSION }}
+          pushd ./res/msi
+          nuget restore msi.sln
+          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
+          $msi = Get-ChildItem ./Package/bin/*/Release/*/Package.msi | Select-Object -First 1
+          popd
+          New-Item -ItemType Directory -Force ./SignOutput | Out-Null
+          mv $msi.FullName ./SignOutput/ElerozConnect-${{ env.VERSION }}-r${{ inputs.run_id }}-x64.msi
+          Get-FileHash ./SignOutput/*.msi | Format-List
+
+      - name: Upload MSI
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: eleroz-connect-windows-x64-msi
+          path: ./SignOutput/ElerozConnect-*.msi
