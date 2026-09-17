@@ -215,10 +215,10 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/elerozconnect.exe
           popd
           mkdir -p ./SignOutput
-          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/ElerozConnect-${{ env.VERSION }}-x64.exe
+          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/ElerozConnect-${{ env.VERSION }}-b${{ github.run_number }}-x64.exe
           sha256sum ./SignOutput/*.exe
 
       - name: Upload ELEROZ Connect executable

@@ -94,7 +94,7 @@ BEGIN
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "ElerozConnect" "\0"
             VALUE "LegalCopyright", "© 2026 ELEROZ. Основано на RustDesk © Purslane Tech Pte. Ltd., GNU AGPL-3.0" "\0"
-            VALUE "OriginalFilename", "rustdesk.exe" "\0"
+            VALUE "OriginalFilename", "elerozconnect.exe" "\0"
             VALUE "ProductName", "ЭЛЕРОЗ Коннект" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
