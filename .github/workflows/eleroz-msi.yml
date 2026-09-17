@@ -43,6 +43,7 @@ jobs:
           pushd ./res/msi
           nuget restore msi.sln
           msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $msi = Get-ChildItem ./Package/bin/*/Release/*/Package.msi | Select-Object -First 1
           popd
           New-Item -ItemType Directory -Force ./SignOutput | Out-Null
