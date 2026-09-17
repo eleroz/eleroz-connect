@@ -226,3 +226,24 @@ jobs:
         with:
           name: eleroz-connect-windows-x64
           path: ./SignOutput/ElerozConnect-*.exe
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+
+      - name: Build MSI
+        run: |
+          python eleroz/build_msi.py ${{ env.VERSION }}
+          pushd ./res/msi
+          nuget restore msi.sln
+          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $msi = Get-ChildItem ./Package/bin/*/Release/*/Package.msi | Select-Object -First 1
+          popd
+          mv $msi.FullName ./SignOutput/ElerozConnect-${{ env.VERSION }}-b${{ github.run_number }}-x64.msi
+          Get-FileHash ./SignOutput/*.msi | Format-List
+
+      - name: Upload ELEROZ Connect MSI
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: eleroz-connect-windows-x64-msi
+          path: ./SignOutput/ElerozConnect-*.msi
