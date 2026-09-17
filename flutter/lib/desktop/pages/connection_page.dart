@@ -131,9 +131,8 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
             ),
             // stop
             if (!isIncomingOnly) startServiceWidget(),
-            // ready && public
-            // No need to show the guide if is custom client.
-            if (!isIncomingOnly) setupServerWidget(),
+            // ЭЛЕРОЗ: сервер уже свой, подсказка про чужой публичный не нужна.
+            if (!isIncomingOnly && !bind.isCustomClient()) setupServerWidget(),
           ],
         );
 

@@ -23,6 +23,11 @@ REPLACEMENTS = [
         'pub const RS_PUB_KEY: &str = "WoplkmUEldqZorDC4MBK+ddFXZEAcnkS9umzrb3m7Rc=";',
     ),
     (
+        "pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();",
+        'pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from(['
+        '("disable-ab".to_owned(), "Y".to_owned()), ("disable-account".to_owned(), "Y".to_owned())]));',
+    ),
+    (
         "pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();",
         'pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("hide-powered-by-me".to_owned(), "Y".to_owned())]));',
     ),
@@ -40,7 +45,8 @@ def main() -> int:
             return 1
         text = text.replace(old, new)
     CONFIG.write_text(text, encoding="utf-8")
-    print("hbb_common branded: APP_NAME=ElerozConnect, server=connect.eleroz.com, ELEROZ key")
+    print("hbb_common branded: APP_NAME=ElerozConnect, server=connect.eleroz.com, ELEROZ key,"
+          " address book and account disabled")
     return 0
 
 
