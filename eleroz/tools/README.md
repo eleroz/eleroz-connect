@@ -1,8 +1,11 @@
 # Инструменты проверки сборки
 
-Скрипты для Windows PowerShell 5.1 (`powershell.exe`, не `pwsh`): им нужен System.Drawing,
-а в PowerShell 7 он подключается не так. Скрипты только читают и снимают экран,
-в систему ничего не ставят.
+Скрипты только читают и снимают экран, в систему ничего не ставят.
+
+- `read-msi.ps1` — в PowerShell 7 (`pwsh`): в нём русские подписи, а Windows PowerShell 5.1
+  читает файлы без BOM в кодировке 1251.
+- Скрипты снимков — в Windows PowerShell 5.1 (`powershell.exe`): им нужен System.Drawing,
+  а в PowerShell 7 он через `Add-Type` не подключается.
 
 | Скрипт | Что делает |
 |---|---|
