@@ -9,7 +9,7 @@
   notes       — что изменилось.
 
 Запуск: python eleroz/make_update_json.py --build 7 --version 1.4.9 \
-        --dir SignOutput --base https://eleroz.ru/connect/ --out SignOutput/update.json
+        --dir SignOutput --base https://eleroz.ru/upload/eleroz-connect/ --out SignOutput/update.json
 """
 import argparse
 import hashlib

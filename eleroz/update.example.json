@@ -2,8 +2,8 @@
   "build": 7,
   "version": "1.4.9",
   "notes": "Постоянный доступ одной кнопкой, инструкция внутри программы",
-  "url": "https://eleroz.ru/connect/ElerozConnect-1.4.9-b7-x64.exe",
+  "url": "https://eleroz.ru/upload/eleroz-connect/ElerozConnect-1.4.9-b7-x64.exe",
   "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-  "msi_url": "https://eleroz.ru/connect/ElerozConnect-1.4.9-b7-x64.msi",
+  "msi_url": "https://eleroz.ru/upload/eleroz-connect/ElerozConnect-1.4.9-b7-x64.msi",
   "msi_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
 }

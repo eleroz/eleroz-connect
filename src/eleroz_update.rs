@@ -12,7 +12,7 @@ use hbb_common::{
 use std::{path::Path, sync::Mutex, time::Duration};
 
 /// Где лежит описание последней версии. Можно подменить настройкой eleroz-update-url.
-pub const MANIFEST_URL: &str = "https://eleroz.ru/connect/update.json";
+pub const MANIFEST_URL: &str = "https://eleroz.ru/upload/eleroz-connect/update.json";
 const TIMEOUT: Duration = Duration::from_secs(20);
 
 lazy_static::lazy_static! {

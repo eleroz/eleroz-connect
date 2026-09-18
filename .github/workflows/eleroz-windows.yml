@@ -19,8 +19,9 @@ env:
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   VCPKG_COMMIT_ID: "120deac3062162151622ca4860575a33844ba10b"
   VERSION: "1.4.9"
-  # Папка на сайте, откуда программа берёт обновление; там же лежит update.json
-  UPDATE_BASE_URL: "https://eleroz.ru/connect/"
+  # Папка на сайте, откуда программа берёт обновление; там же лежит update.json.
+  # Её же отдаёт кнопка скачивания на eleroz.ru/udalennaya-pomoshch/
+  UPDATE_BASE_URL: "https://eleroz.ru/upload/eleroz-connect/"
 
 jobs:
   generate-bridge:
