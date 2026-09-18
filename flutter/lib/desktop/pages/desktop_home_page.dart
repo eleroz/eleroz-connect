@@ -526,10 +526,10 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     // ЭЛЕРОЗ: обновление приходит с нашего сайта, проверок на чужой клиент не нужно.
     if (updateUrl.isNotEmpty && !isCardClosed) {
       final isToUpdate = (isWindows || isMacOS) && bind.mainIsInstalled();
-      String btnText = isToUpdate ? 'Update' : 'Download';
+      String btnText = isToUpdate ? 'Обновить' : 'Скачать';
+      // Без установки обновлять нечего: браузер просто скачает новый файл с сайта.
       GestureTapCallback onPressed = () async {
-        final Uri url = Uri.parse('https://rustdesk.com/download');
-        await launchUrl(url);
+        await launchUrl(Uri.parse(updateUrl));
       };
       if (isToUpdate) {
         onPressed = () {
@@ -537,7 +537,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         };
       }
       return buildInstallCard(
-          "Status",
+          "Обновление",
           "${translate("new-version-of-{${bind.mainGetAppNameSync()}}-tip")} (${bind.mainGetNewVersion()}).",
           btnText,
           onPressed,
@@ -556,8 +556,9 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           bind.mainGotoInstall();
         });
       } else if (bind.mainIsInstalledLowerVersion()) {
+        // ЭЛЕРОЗ: «Нажмите, чтобы обновить» не помещалось в кнопку.
         return buildInstallCard(
-            "Status", "Your installation is lower version.", "Click to upgrade",
+            "Обновление", "На компьютере установлена более старая версия.", "Обновить",
             () async {
           await rustDeskWinManager.closeAllSubWindows();
           bind.mainUpdateMe();
